@@ -14,11 +14,13 @@ function connect(mapStateToProps) {
         const tokens: string[] = getAccessTokens()
         const promises: Promise<Team>[] = []
         tokens.forEach(token => promises.push(getTeam(token)))
-        Promise.all(promises).then(teams => {
-          this.setState({
-            teams,
+        Promise.all(promises)
+          .then((teams: Team[]) => {
+            this.setState({ teams })
           })
-        })
+          .catch(err => {
+            this.setState({ teams: [] })
+          })
       }
       render() {
         const props: PublicProps = mapStateToProps(this.state)

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { IndexPage } from './pages/index'
+import { Root } from './root'
 
 
 ReactDOM.render(
-  <IndexPage />,
+  <Root />,
   document.getElementById('root')
 )

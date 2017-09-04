@@ -1,22 +1,41 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { List } from '../../components/list'
-import { Emote } from '../../models/emote'
-import { Team } from '../../models/team'
+import { Team as TeamModel } from '../../models/team'
+import { Team } from '../../components/team'
+import { Search } from '../../components/search'
+import './style.scss'
 
 export type PublicProps = {
-  teams: Team[]
+  teams: TeamModel[]
 }
 
-export const IndexPage: React.StatelessComponent<PublicProps> = (props: PublicProps) => {
-  return (
-    <div className="wrapper">
-      {props.teams.map(team => (
-        <div key={team.name}>
-          <p>{team.name}</p>
-          <List emotes={team.emotes} />
-        </div>
-      ))}
-    </div>
-  )
+export class IndexPage extends React.Component<PublicProps> {
+  state = {
+    query: ''
+  }
+
+  handleSearch = (query: string) => {
+    this.setState({
+      query
+    })
+  }
+
+  filterEmotes = (query: string, team: TeamModel): TeamModel => {
+    return {
+      ...team,
+      emotes: team.emotes.filter(emote => emote.id.indexOf(query) > -1)
+    }
+  }
+
+  render() {
+    const { query } = this.state
+    const { teams } = this.props
+    return (
+      <div className="wrapper">
+        { teams.map(team => (
+          <Team key={team.name} team={this.filterEmotes(query, team)} />
+        )) }
+        <Search onInput={this.handleSearch} />
+      </div>
+    )
+  }
 }
