@@ -1,3 +1,35 @@
 .wrapper {
-  position: absolute;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  width: 100%;
+}
+
+.team-container {
+  flex-grow: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.footer-container {
+  border-top: 1px solid black;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 10px black;
+}
+
+.jump-container {
+  padding-bottom: 0.5rem;
+  font-size: 1rem;
+
+  a {
+    color: #3E606F;
+    text-decoration: none;
+    padding: 0.5rem;
+
+    &:hover{
+      color: #193441;
+      text-decoration: underline;
+    }
+  }
 }

@@ -12,9 +12,5 @@ export const Search: React.StatelessComponent<PublicProps> = (props: PublicProps
     props.onInput(e.target.value)
   }
 
-  return (
-    <div className="search">
-      <input placeholder="Filter" onChange={onChange} />
-    </div>
-  )
+  return <input className="search" placeholder="Filter" onChange={onChange} />
 }

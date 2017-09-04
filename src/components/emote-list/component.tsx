@@ -4,7 +4,9 @@ import { Emote } from '../../models/emote'
 import './style.scss'
 
 type PublicProps = {
-  emotes: Emote[]
+  emotes: Emote[],
+  selectedEmotes: Emote[],
+  onSelectEmote(emote: Emote, remove?: boolean): void
 }
 
 type ListState = {}
@@ -12,18 +14,30 @@ type ListState = {}
 export class EmoteList extends React.Component<PublicProps, ListState> {
   state = {}
 
+  handleClick = (emote: Emote) => {
+    const remove = this.props.selectedEmotes.indexOf(emote) > -1
+    this.props.onSelectEmote(emote, remove)
+  }
+
   render() {
-    const active = true
+    const { emotes, selectedEmotes } = this.props
     return (
       <div className="list">
-        {this.props.emotes.map((emote: Emote) => (
-          <div key={emote.id} className={`item ${active ? 'active' : ''}`}>
-            <img src={emote.url} />
-            <span className="name">
-              {emote.id}
-            </span>
-          </div>
+        {emotes.map((emote: Emote) => (
+          <button
+            key={emote.id}
+            className={`item ${selectedEmotes.indexOf(emote) > -1 ? 'active' : ''}`}
+            onClick={() => this.handleClick(emote)}
+            >
+              <img src={emote.url} />
+              <p className="name">
+                {emote.id}
+              </p>
+          </button>
         ))}
+        { !emotes.length && (
+          <div className="empty">No emotes</div>
+        )}
       </div>
     )
   }

@@ -54,6 +54,7 @@ export function getTeam(token: string): Promise<Team> {
     getTeamEmotes(token),
   ]).then(resp => ({
     name: resp[0].name,
+    id: resp[0].id,
     emotes: convertTeamEmotes(resp[1])
   }))
 }
