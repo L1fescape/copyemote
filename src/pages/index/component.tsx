@@ -1,17 +1,17 @@
 import * as React from 'react'
-import { Team as TeamModel } from '../../models/team'
-import { Emote as EmoteModel } from '../../models/emote'
-import { Team } from '../../components/team'
+import { Team } from '../../models/team'
+import { Emote } from '../../models/emote'
+import { EmoteList } from '../../components/emote-list'
 import { Search } from '../../components/search'
 import './style.scss'
 
 export type PublicProps = {
-  teams: TeamModel[],
+  teams: Team[]
 }
 
 type State = {
   query: string
-  selectedEmotes: {[key: string]: EmoteModel[]}
+  selectedEmotes: {[key: string]: Emote[]}
 }
 
 export class IndexPage extends React.Component<PublicProps> {
@@ -26,35 +26,30 @@ export class IndexPage extends React.Component<PublicProps> {
     })
   }
 
-  filterEmotes = (query: string, team: TeamModel): TeamModel => {
-    return {
-      ...team,
-      emotes: team.emotes.filter(emote => emote.id.indexOf(query) > -1)
-    }
+  filterEmotes = (query: string, emotes: Emote[]): Emote[] => {
+    query = query.toLowerCase()
+    return emotes.filter(emote => emote.id.indexOf(query) > -1)
   }
 
-  handleSelectEmote = (teamName: string, emote: EmoteModel, remove?: boolean): void => {
+  handleSelectEmote = (teamName: string, emote: Emote, remove?: boolean): void => {
     const { selectedEmotes } = this.state
     const teamSelectedEmotes = selectedEmotes[teamName] || []
+    let teamEmotes = teamSelectedEmotes.concat([emote])
+
     if (remove) {
       const index = teamSelectedEmotes.indexOf(emote)
-      this.setState({
-        selectedEmotes: {
-          ...selectedEmotes,
-          [teamName]: [
-            ...teamSelectedEmotes.slice(0, index),
-            ...teamSelectedEmotes.slice(index+1),
-          ]
-        }
-      })
-    } else {
-      this.setState({
-        selectedEmotes: {
-          ...selectedEmotes,
-          [teamName]: teamSelectedEmotes.concat([emote])
-        }
-      })
+      teamEmotes = [
+        ...teamSelectedEmotes.slice(0, index),
+        ...teamSelectedEmotes.slice(index+1),
+      ]
     }
+
+    this.setState({
+      selectedEmotes: {
+        ...selectedEmotes,
+        [teamName]: teamEmotes
+      }
+    })
 
   }
 
@@ -65,12 +60,14 @@ export class IndexPage extends React.Component<PublicProps> {
       <div className="wrapper">
         <div className="team-container">
           { teams.map(team => (
-            <Team
-              key={team.name}
-              team={this.filterEmotes(query, team)}
-              selectedEmotes={selectedEmotes[team.name] || []}
-              onSelectEmote={(emote, remove) => this.handleSelectEmote(team.name, emote, remove)}
+            <div key={team.id} className="team" id={team.name}>
+              <div className="team-name">{team.name}</div>
+              <EmoteList
+                emotes={this.filterEmotes(query, team.emotes)}
+                selectedEmotes={selectedEmotes[team.name] || []}
+                onSelectEmote={(emote, remove) => this.handleSelectEmote(team.name, emote, remove)}
               />
+            </div>
           )) }
         </div>
         <div className="footer-container">
